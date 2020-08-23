@@ -25,28 +25,28 @@ def parse_it():
     args = parser.parse_args()
     return args
 
-def run_vienna(sequence):                                                       
-    """                                                                         
-    """                                                                         
-    #RNAfold  --gquad   --noconv   <    test_fasta.fasta                        
-    raw_data = os.path.splitext(sequence)[0] + ".vienna"                        
+def run_vienna(sequence):
+    """
+    """
+    #RNAfold  --gquad   --noconv   <    test_fasta.fasta
+    raw_data = os.path.splitext(sequence)[0] + ".vienna"
     VIENNA_PARAMS = os.path.join(os.environ["VIENNA"], "dna_mathews2004.par")
 
-    v_energy = "Undefined"                                                        
-    try:                                                                        
-        with open(sequence, 'r') as fhin:                                       
+    v_energy = "Undefined"
+    try:
+        with open(sequence, 'r') as fhin:
             with open(raw_data, 'w') as fhout:
                 v_result = subprocess.call(["RNAfold", "--gquad", "--noconv", "--paramFile", VIENNA_PARAMS], stdin=fhin, stdout=fhout)
-                ps_file = glob.glob("*.ps")                                     
-                if ps_file[0]:                                                  
-                    v_result = subprocess.call(["ps2pdf", ps_file[0]])            
-    except IOError:                                                             
-        pass                                                                    
-    else:                                                                       
+                ps_file = glob.glob("*.ps")
+                if ps_file[0]:
+                    v_result = subprocess.call(["ps2pdf", ps_file[0]])
+    except IOError:
+        pass
+    else:
         with open(raw_data, 'r') as fh:
-            for idx, line in enumerate(fh):                                     
-                if idx == 2:                                                    
-                    v_energy = line.split()[-1].strip("(").strip(")")             
+            for idx, line in enumerate(fh):
+                if idx == 2:
+                    v_energy = line.split()[-1].strip("(").strip(")")
     return v_energy
 
 def fold_seq(input_args):
@@ -56,7 +56,7 @@ def fold_seq(input_args):
     """
     os.chdir(input_args[1])
     vienna_energy = run_vienna(input_args[0])
-    
+
     mfold_arg1="SEQ=" + input_args[0]
     mfold_arg2="NA=DNA"
     with open(os.devnull, "w") as fnull:
@@ -72,7 +72,7 @@ def fold_seq(input_args):
                 energy = line.split()[3]
                 break
     except IOError:
-        energy = "Undefined"            
+        energy = "Undefined"
 
     targz_name = tarfile.open(input_args[0] + ".tgz",'w:gz')
     for a_file in os.listdir(input_args[1]):
@@ -97,7 +97,7 @@ def driver(scratch_dir, fasta_file_name):
         pass
 
     os.mkdir(scratch_dir)
-    # Create the pool of workers 
+    # Create the pool of workers
     #TODO use celery eventually?
     worker_pool = Pool(NUM_PROCESSORS)
     jobs = []
@@ -112,19 +112,19 @@ def driver(scratch_dir, fasta_file_name):
         seq_segments = []
         for record in SeqIO.parse(handle, "fasta"):
             num_seq = len(record.seq)
-            print record.id
-            print "num seq ", num_seq
-            print "divid by window size %f", float(num_seq / SLIDING_WINDOW_SIZE)
-            print "module by window size %f", float(num_seq % SLIDING_WINDOW_SIZE)
+            print(record.id)
+            print("num seq ", num_seq)
+            print("divid by window size %f", float(num_seq / SLIDING_WINDOW_SIZE))
+            print("module by window size %f", float(num_seq % SLIDING_WINDOW_SIZE))
             seq_segments =  [ record.seq[i:i+FOLD_SIZE] for i in range(0, num_seq, SLIDING_WINDOW_SIZE)]
 
-        print len(seq_segments)
+        print(len(seq_segments))
 
 
     cpu = 0
     #for i in [0,10001,10003, 100002, 100003, 100004, 10005, 100006]:
     for i in range(len(seq_segments)):
-        #print seq_segments[i], len(seq_segments[i])
+        #print(seq_segments[i], len(seq_segments[i]))
         prefix = ""
         if i < 10:
             prefix = "0000" + str(i)
@@ -146,7 +146,7 @@ def driver(scratch_dir, fasta_file_name):
         try:
             current_write_dir = cpu_workdirs[cpu]
         except IndexError:
-            print "skipping i, cpu", i, cpu
+            print("skipping i, cpu", i, cpu)
             pass
         else:
             seq_dir = os.path.join(current_write_dir, prefix)
@@ -158,7 +158,7 @@ def driver(scratch_dir, fasta_file_name):
             output_handle.close()
             jobs.append([prefix + ".fasta", seq_dir])
 
-    print "folding", jobs
+    print("folding", jobs)
 
     worker_pool.map(fold_seq, jobs)
 
@@ -214,7 +214,7 @@ def get_energy_simple(scratch_dir, fasta_file_name):
             ename = os.path.join(seq_dir, "energy.dat")
             try:
                 with open(ename, 'r') as fh:
-                    for line in fh: 
+                    for line in fh:
                         master_list.append(line)
                         break
             except IOError:

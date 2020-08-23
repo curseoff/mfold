@@ -16,7 +16,7 @@ def parse_it():
     parser.add_argument('column', type=int, choices=range(1,3), help=("1=mfold 2=vienna"))
     parser.add_argument('start_pos', type=int, help=("The start position of the folded region i.e. 100323"), default=0)
     parser.add_argument('chromosome', help=("The chromosome for the folded region i.e. chr1"))
-    
+
     args = parser.parse_args()
     return args
 
@@ -40,12 +40,12 @@ def gen_bed(args):
             if val == "Undefined":
                 output.append("%s %s\n"%(count, 0))
                 output_simple.append("%s\t%s\t%s\t%s\n"%(chrom,
-                                                        absolute_pos, 
+                                                        absolute_pos,
                                                         absolute_end_pos, val))
             else:
                 output.append("%s %s\n"%(count, val))
                 output_simple.append("%s\t%s\t%s\t%s\n"%(chrom,
-                                                        absolute_pos, 
+                                                        absolute_pos,
                                                         absolute_end_pos, val))
                 if float(val) < min_val:
                     min_val = float(val)
@@ -59,7 +59,7 @@ def gen_bed(args):
         for d in output_simple:
             fout.write(d)
 
-    print "min --> ", min_val
+    print("min --> ", min_val)
 
 def main():
     args = parse_it()

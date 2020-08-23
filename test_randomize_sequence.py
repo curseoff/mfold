@@ -24,7 +24,7 @@ class TestRandomizeSequenceFunctions(unittest.TestCase):
         for idx, s in enumerate(rsr.seq):
             if seq[idx] == s:
                 similarity_count+=1
-        print "similarity count : ", similarity_count
+        print("similarity count : ", similarity_count)
         self.assertLess(similarity_count,len(seq))
 
     def test_masking_snp(self):
@@ -41,12 +41,12 @@ class TestRandomizeSequenceFunctions(unittest.TestCase):
 
         seq, maps = rs.read_sequence(self.seq_fname)
         abs_rel_map = maps[1]
-       
+
         snp = abs_rel_map[31795512]
-        print seq[snp]
+        print(seq[snp])
         rsr = rs.shuffle_sequence(seq, maps, n=100, mask=("snp", mask["snp"])
             )
-        print rsr.seq[snp]
+        print(rsr.seq[snp])
         self.assertEqual(seq[snp], rsr.seq[snp])
 
     def test_masking_region(self):
@@ -63,7 +63,7 @@ class TestRandomizeSequenceFunctions(unittest.TestCase):
 
         seq, maps = rs.read_sequence(self.seq_fname)
         abs_rel_map = maps[1]
-       
+
         expected_seq = ''.join([seq[abs_rel_map[s]] for s in range(31795312,31795325+1)])
         rsr = rs.shuffle_sequence(seq, maps, n=100, mask=("HSE1", mask["HSE1"])
             )
@@ -78,10 +78,10 @@ class TestRandomizeSequenceFunctions(unittest.TestCase):
         abs_rel_map = maps[1]
 
         expected_seq = ''.join([seq[abs_rel_map[s]] for s in range(31795202, 31795202+1)])
-        print expected_seq
+        print(expected_seq)
         rsr = rs.shuffle_sequence(seq, maps, n=100, mask=("HSE1", mask["HSE1"]))
         region_seq = ''.join([rsr.seq[abs_rel_map[s]] for s in range(31795202, 31795202+1)])
-        print region_seq
+        print(region_seq)
         self.assertEqual(expected_seq, region_seq)
 
 

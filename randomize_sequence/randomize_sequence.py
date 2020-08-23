@@ -23,7 +23,7 @@ def read_sequence(fname):
     handle.close()
 
     maps = get_position_maps(sequence, start_end_abs_pos)
-    
+
     return (sequence, maps)
 
 def get_start_end_abs_position(a_header):
@@ -69,8 +69,8 @@ def shuffle_sequence(sequence, pos_maps, n=100,  mask=None):
                 ran[i] = ref[i]
         randomized_sequence_string = ''.join(ran)
     #Double check first few nucleotides (The first 10 and last 10)
-    print "Original sequence  : %s...%s " % (original_sequence_string[0:10], original_sequence_string[0:10])
-    print "Radomized sequence : %s...%s " % (randomized_sequence_string[0:10], randomized_sequence_string[0:10])
+    print("Original sequence  : %s...%s " % (original_sequence_string[0:10], original_sequence_string[0:10]))
+    print("Radomized sequence : %s...%s " % (randomized_sequence_string[0:10], randomized_sequence_string[0:10]))
     randomized_Seq_object = Seq(randomized_sequence_string, IUPAC.unambiguous_dna)
 
     randomized_sequence_record = SeqRecord(randomized_Seq_object,
@@ -90,7 +90,7 @@ def write_new_sequence(fname, record, mask=None):
     output_handle = open(fname, "w")
     SeqIO.write(record, output_handle, "fasta")
     output_handle.close()
-    print "Wrote randomized sequence to %s " % fname
+    print("Wrote randomized sequence to %s " % fname)
 
 def process(input_fname, output_fname, num, mask=None):
     """
@@ -107,13 +107,13 @@ def main(args):
     seq, header = read_sequence(args.input_fasta)
     randomized_record = shuffle_sequence(seq, args.num)
     write_new_sequence(args.output_fasta, randomized_record)
-    
+
 
 if __name__=="__main__":
 
 
     parser = argparse.ArgumentParser(description='Randomize fasta file')
-    parser.add_argument('input_fasta', metavar='INPUT_FASTA_FILE', 
+    parser.add_argument('input_fasta', metavar='INPUT_FASTA_FILE',
                    help='filename of the input fasta')
     parser.add_argument('output_fasta', metavar='OUTPUT_FASTA_FILE',
                    help='filename of the output fasta')
@@ -121,5 +121,5 @@ if __name__=="__main__":
                        default=100, help='number of times to randomize')
 
     args = parser.parse_args()
-    print args
+    print(args)
     main(args)

@@ -4,7 +4,7 @@ import subprocess
 import os
 import shutil
 import json
-import sys 
+import sys
 import numpy as np
 import argparse
 
@@ -36,12 +36,12 @@ def process_sequence(fname, n_seqs_to_generate, n_times_randomize_seq, mask=None
 
         dir_name = "%04d" % i
         cmd = "process_fasta.py --fasta_file %s --scratch_dir %s" % (fname_out, dir_name)
-        print cmd
+        print(cmd)
         #This gets rid of the vienna output
         with open(os.devnull, 'w') as FNULL:
             subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
         #subprocess.call(cmd, shell=True, stderr=subprocess.STDOUT)
-        
+
         energy_file_name = "%s_energy.dat" % dir_name
         shutil.move("master_energy.dat", energy_file_name)
         #TODO Make this an option
@@ -56,7 +56,7 @@ def process_sequence(fname, n_seqs_to_generate, n_times_randomize_seq, mask=None
 
     return sample
 
-    
+
 def save_results(fname, n_seqs_to_generate, sample, mask_name=None):
     """
     :param fname:
@@ -82,7 +82,7 @@ def save_results(fname, n_seqs_to_generate, sample, mask_name=None):
 
     fname_base = os.path.splitext(fname)[0]
     if mask_name:
-        save_name = "%s_%s_mask_randomized_samples.json"%(fname_base, 
+        save_name = "%s_%s_mask_randomized_samples.json"%(fname_base,
                                                             mask_name)
     else:
         save_name = "%s_randomized_samples.json"%(fname_base)
@@ -158,7 +158,6 @@ if __name__=='__main__':
 
 
     run(fasta_file_name, seqs_to_gen, num_times_to_randomize, mask=mask_file_name)
-    #run(fname_in, seqs_to_gen, num_times_to_randomize, 
-    #    mask={"mask_test3":[(133450052,133450052+300), 
+    #run(fname_in, seqs_to_gen, num_times_to_randomize,
+    #    mask={"mask_test3":[(133450052,133450052+300),
     #        (133450052+301,133450052+601)]})
-
